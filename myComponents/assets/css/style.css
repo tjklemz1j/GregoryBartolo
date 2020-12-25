@@ -1,0 +1,27 @@
+* { margin: 0; padding: 0; }
+
+body, html { height: 100%; }
+
+html {
+    background-image: url('../imgs/wallpaper.jpg');
+    background-repeat: no-repeat;
+    background-size: 30%;
+}
+
+canvas {
+    width: 70%;
+    height: 100%;
+    right: 0;
+    position: fixed;
+}
+
+#myCanvas {
+    width: 390;
+    height: 175;
+    right: inherit;
+    position: fixed !important;
+    top: 2rem;
+    left: 2rem;
+    background: linear-gradient(0deg, rgba(0,0,0,1) 11%, rgba(198,17,17,0.7010154403558299) 74%, rgba(119,10,10,0) 100%);
+    border-bottom: 10px groove #c12412;
+}
