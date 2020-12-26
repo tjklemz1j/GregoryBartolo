@@ -19,8 +19,18 @@ template.innerHTML = /*html*/`
 
     #frequency {
         background: linear-gradient(90deg, rgba(61,31,31,1) 0%, rgba(186,20,20,1) 50%, rgba(61,31,31,1) 100%);
-        margin: 4rem 2rem 2rem 2rem;
+        margin: 1rem 2rem 2rem 2rem;
         border: 5px solid #000000;
+    }
+
+    #playlist {
+        background: linear-gradient(90deg, rgba(61,31,31,1) 0%, rgba(186,20,20,1) 50%, rgba(61,31,31,1) 100%);
+        border: 5px solid #000000;
+        width: fit-content;
+        display: inline-grid;
+        padding: 0.5em 0.5rem 0.5rem 0.5rem;
+        margin-top: 0.5rem;
+        font-weight: 700;
     }
 
     #frequency_sliders {
@@ -48,6 +58,10 @@ template.innerHTML = /*html*/`
         font-weight: 600;
         font-size: 17px;
     }
+
+    .white {
+        color: white;
+    }
   </style>
 
   <div id="panel_left">
@@ -58,10 +72,15 @@ template.innerHTML = /*html*/`
             direction="horz"
             width="350"
             height="30"
-            style="margin-bottom: 1rem; margin-top: 2rem;">
+            style="margin-bottom: 1rem;">
         </webaudio-slider>
         <br/>
         <div id="buttons_player">
+            <webaudio-switch
+                id="prevsong"
+                src="./assets/imgs/S_Arrow2-Prev.png"
+                type="kick">
+            </webaudio-switch>
             <webaudio-switch
                 id="recule10"
                 src="./assets/imgs/S_Arrow2-L.png"
@@ -74,6 +93,11 @@ template.innerHTML = /*html*/`
             <webaudio-switch
                 id="avance10"
                 src="./assets/imgs/S_Arrow2-R.png"
+                type="kick">
+            </webaudio-switch>
+            <webaudio-switch
+                id="nextsong"
+                src="./assets/imgs/S_Arrow2-Suiv.png"
                 type="kick">
             </webaudio-switch>
             <br/>
@@ -105,6 +129,22 @@ template.innerHTML = /*html*/`
                 5
             </div>
         </div>
+        <br>
+
+        <div id="playlist">
+            <span data-sound="./myComponents/songs/Kiss-Iwasmadeforlovinyou.mp3">
+                Kiss - I was made for lovin you
+            </span>
+  
+            <span data-sound="./myComponents/songs/ACDC-Thunderstruck.mp3">
+                ACDC - Thunderstruck
+            </span>
+
+            <span data-sound="./myComponents/songs/ACDC-Backinblack.mp3">
+                ACDC - Back in black
+            </span>
+        </div>
+
         <br>
         <div id="frequency">
             <div id="frequency_sliders">
@@ -183,8 +223,13 @@ class MyAudioPlayer extends HTMLElement {
         this.fixRelativeURLs();
 
         this.player = this.shadowRoot.querySelector("#myPlayer");
-        this.player.src = this.getAttribute("src");
         this.player.crossOrigin = "anonymous";
+
+        //recupération des musiques de la playlist
+        this.playlist = this.shadowRoot.querySelector("#playlist").children;
+        this.currentPlay = 0;
+        this.player.src = this.playlist[this.currentPlay].dataset.sound;
+        this.playlist[this.currentPlay].className = "white";
 
         // init bubble and bar visualizer
         initVisualizer(this.player);
@@ -233,9 +278,42 @@ class MyAudioPlayer extends HTMLElement {
             this.player.currentTime += 10;
         }
 
+        this.shadowRoot.querySelector("#prevsong").onclick = () => {
+            if(this.player.loop == false)
+            {
+              this.playlist[this.currentPlay].className = "";
+
+              this.currentPlay--;
+              if(this.currentPlay < 0)
+              {
+                this.currentPlay = this.playlist.length - 1;
+              }
+              this.player.src = this.playlist[this.currentPlay].dataset.sound;
+              this.playlist[this.currentPlay].className = "white";
+
+              this.player.play();
+            }
+        }
+
+        this.shadowRoot.querySelector("#nextsong").onclick = () => {
+            if(this.player.loop == false)
+            {
+              this.playlist[this.currentPlay].className = "";
+
+              this.currentPlay++;
+              if(this.currentPlay >= this.playlist.length)
+              {
+                this.currentPlay = 0;
+              }
+              this.player.src = this.playlist[this.currentPlay].dataset.sound;
+              this.playlist[this.currentPlay].className = "white";
+
+              this.player.play();
+            }
+        }
+
         this.shadowRoot.querySelector("#vitesseLecture").oninput = (event) => {
             this.player.playbackRate = parseFloat(event.target.value);
-            console.log("vitesse =  " + this.player.playbackRate);
         }
 
         this.shadowRoot.querySelector("#slider").onchange = (event) => {
@@ -243,7 +321,6 @@ class MyAudioPlayer extends HTMLElement {
         }
 
         this.shadowRoot.querySelector("#volumeKnob").oninput = (event) => {
-            console.log(event.target.value/10);
             this.player.volume = event.target.value/10;
         }
 
