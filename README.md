@@ -22,3 +22,5 @@ Le player a entièrement était développé par moi-même ainsi que le design.
 Uniquement la visualisation musicale en 3D a fait l'objet d'une intégration partielle à l'existant.
 
 Les boutons et sliders sont issues d'une bibliothèque que l'on retrouve ici : https://g200kg.github.io/webaudio-controls/docs/index.html
+
+Les commits du repository ne sont pas représentatifs de la quantité de travail fournie.
